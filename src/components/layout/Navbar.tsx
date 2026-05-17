@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Terminal, Menu, X, Layers, Zap, Users, Code2, Shield } from 'lucide-react'
+import { Terminal, Menu, X, Layers, Zap, Users, Code2, Shield, Box } from 'lucide-react'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home', icon: Zap },
   { to: '/methods', label: 'Methods', icon: Layers },
-  { to: '/scripts', label: 'Script Gen', icon: Code2 },
+  { to: '/sandbox', label: 'Containers', icon: Box },
+  { to: '/scripts', label: 'Scripts', icon: Code2 },
   { to: '/accounts', label: 'Accounts', icon: Users },
   { to: '/safety', label: 'Safety', icon: Shield },
 ]

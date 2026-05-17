@@ -1,10 +1,8 @@
-export interface Account {
-  id: string
-  username: string
-  label: string
-  cookie?: string
-  addedAt: string
-  color: string
+export interface Step {
+  title: string
+  description: string
+  code?: string
+  warning?: string
 }
 
 export interface Method {
@@ -18,15 +16,23 @@ export interface Method {
   pros: string[]
   cons: string[]
   steps: Step[]
-  notes?: string
   link?: string
+  notes?: string
 }
 
-export interface Step {
-  title: string
-  description: string
-  code?: string
-  warning?: string
+export interface Account {
+  id: string
+  username: string
+  label: string
+  addedAt: string
+  color: string
 }
 
-export type ScriptType = 'powershell' | 'batch' | 'manual'
+export type ScriptType =
+  | 'powershell_mutex'
+  | 'handle_auto_close'
+  | 'batch_launcher'
+  | 'startup_task'
+  | 'ahk_process_explorer'
+  | 'windows_sandbox_config'
+  | 'runas_launcher'
