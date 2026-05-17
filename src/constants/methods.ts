@@ -80,55 +80,55 @@ ms-windows-store://pdp/?ProductId=9NBLGGGZM6WM`,
       {
         title: 'Run the Mutex Pre-Claim Script',
         description: 'Paste the full script below into the Admin PowerShell window and press Enter. It claims ROBLOX_singletonEvent using the Windows Mutex API, preventing Roblox from using it to close other instances.',
-        code: `# MultiRBX — Mutex Pre-Claim Script v2
-# Run as Administrator. Keep this window open while gaming.
-
-Add-Type -TypeDefinition @"
-using System;
-using System.Threading;
-using System.Runtime.InteropServices;
-
-public class MultiRBXMutex {
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern IntPtr CreateMutex(
-        IntPtr lpMutexAttributes,
-        bool bInitialOwner,
-        string lpName
-    );
-    
-    public static IntPtr handle1 = IntPtr.Zero;
-    public static IntPtr handle2 = IntPtr.Zero;
-    
-    public static void HoldAll() {
-        handle1 = CreateMutex(IntPtr.Zero, true, "ROBLOX_singletonEvent");
-        if (handle1 != IntPtr.Zero)
-            Console.WriteLine("[OK] Claimed: ROBLOX_singletonEvent");
-
-        handle2 = CreateMutex(IntPtr.Zero, true, "Global\\\\ROBLOX_singletonEvent");
-        if (handle2 != IntPtr.Zero)
-            Console.WriteLine("[OK] Claimed: Global\\\\ROBLOX_singletonEvent");
-    }
-}
-"@
-
-Clear-Host
-Write-Host "======================================================" -ForegroundColor DarkCyan
-Write-Host "  MultiRBX Mutex Holder - Active" -ForegroundColor Cyan
-Write-Host "======================================================" -ForegroundColor DarkCyan
-Write-Host ""
-[MultiRBXMutex]::HoldAll()
-Write-Host ""
-Write-Host "[READY] Launch Roblox instances NOW" -ForegroundColor Green
-Write-Host "[INFO]  Keep this window open the entire session" -ForegroundColor Yellow
-Write-Host "[INFO]  Press CTRL+C when finished to release" -ForegroundColor DarkGray
-Write-Host ""
-
-$t = 0
-while ($true) {
-    Start-Sleep -Seconds 5
-    $t += 5
-    Write-Host -NoNewline ("`r[RUNNING] $([math]::Floor($t/60))m $($t%60)s elapsed — mutex active... ")
-}`,
+        code: [
+          '# MultiRBX -- Mutex Pre-Claim Script v2',
+          '# Run as Administrator. Keep this window open while gaming.',
+          '',
+          'Add-Type -TypeDefinition @"',
+          'using System;',
+          'using System.Threading;',
+          'using System.Runtime.InteropServices;',
+          '',
+          'public class MultiRBXMutex {',
+          '    [DllImport("kernel32.dll", SetLastError = true)]',
+          '    public static extern IntPtr CreateMutex(',
+          '        IntPtr lpMutexAttributes,',
+          '        bool bInitialOwner,',
+          '        string lpName',
+          '    );',
+          '    public static IntPtr handle1 = IntPtr.Zero;',
+          '    public static IntPtr handle2 = IntPtr.Zero;',
+          '    public static void HoldAll() {',
+          '        handle1 = CreateMutex(IntPtr.Zero, true, "ROBLOX_singletonEvent");',
+          '        if (handle1 != IntPtr.Zero)',
+          '            Console.WriteLine("[OK] Claimed: ROBLOX_singletonEvent");',
+          '        handle2 = CreateMutex(IntPtr.Zero, true, "Global\\\\ROBLOX_singletonEvent");',
+          '        if (handle2 != IntPtr.Zero)',
+          '            Console.WriteLine("[OK] Claimed: Global\\\\ROBLOX_singletonEvent");',
+          '    }',
+          '}',
+          '"@',
+          '',
+          'Clear-Host',
+          'Write-Host "======================================================" -ForegroundColor DarkCyan',
+          'Write-Host "  MultiRBX Mutex Holder - Active" -ForegroundColor Cyan',
+          'Write-Host "======================================================" -ForegroundColor DarkCyan',
+          'Write-Host ""',
+          '[MultiRBXMutex]::HoldAll()',
+          'Write-Host ""',
+          'Write-Host "[READY] Launch Roblox instances NOW" -ForegroundColor Green',
+          'Write-Host "[INFO]  Keep this window open the entire session" -ForegroundColor Yellow',
+          'Write-Host "[INFO]  Press CTRL+C when finished to release" -ForegroundColor DarkGray',
+          'Write-Host ""',
+          '',
+          '$t = 0',
+          'while ($true) {',
+          '    Start-Sleep -Seconds 5',
+          '    $t += 5',
+          // backtick-r is PS carriage return — use string concat to avoid TS template literal conflict
+          '    Write-Host -NoNewline ("' + '`r' + '[RUNNING] $([math]::Floor($t/60))m $($t%60)s elapsed -- mutex active... ")',
+          '}',
+        ].join('\n'),
       },
       {
         title: 'Launch Roblox instances',
