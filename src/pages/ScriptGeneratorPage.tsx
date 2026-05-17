@@ -189,10 +189,7 @@ Write-Host "[READY]  Launch Roblox instances NOW" -ForegroundColor Green
 Write-Host "[INFO]   Keep this window open the entire session" -ForegroundColor Yellow
 Write-Host "[INFO]   Press CTRL+C when done" -ForegroundColor DarkGray
 Write-Host ""
-${config.showNotification ? `# Pop-up notification
-Add-Type -AssemblyName System.Windows.Forms
-[System.Windows.Forms.MessageBox]::Show("MultiRBX mutex is active!`nLaunch Roblox instances now.", "MultiRBX", "OK", "Information") | Out-Null
-` : ''}
+${config.showNotification ? ['# Pop-up notification', 'Add-Type -AssemblyName System.Windows.Forms', '[System.Windows.Forms.MessageBox]::Show("MultiRBX mutex is active!`n' + 'Launch Roblox instances now.", "MultiRBX", "OK", "Information") | Out-Null'].join('\n') + '\n' : ''}
 $elapsed = 0
 while ($true) {
     Start-Sleep -Seconds 5
