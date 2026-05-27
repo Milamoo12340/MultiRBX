@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Zap, Layers, Code2, ArrowRight, Terminal, AlertTriangle, Shield, Users, Box, Monitor } from 'lucide-react'
+import { Zap, Layers, Code2, ArrowRight, Terminal, AlertTriangle, Shield, Users, Box, Monitor, GitBranch } from 'lucide-react'
 import heroBg from '@/assets/hero-bg.jpg'
 
 const QUICK_METHODS = [
@@ -14,19 +14,28 @@ const QUICK_METHODS = [
   },
   {
     icon: Zap,
-    title: 'PowerShell Mutex',
+    title: 'PowerShell Full Claim v3',
     badge: 'RECOMMENDED',
     badgeColor: 'text-[hsl(180,100%,50%)] border-[hsl(180,100%,50%)/0.3] bg-[hsl(180,100%,50%)/0.1]',
-    desc: 'Pre-claim ROBLOX_singletonEvent before Roblox. 10+ instances. Pure Windows API.',
+    desc: 'Claims both ROBLOX_singletonMutex AND singletonEvent. 10+ instances. Pure Windows API.',
     diff: 'Beginner',
     diffColor: 'text-[hsl(150,100%,45%)]',
+  },
+  {
+    icon: Code2,
+    title: 'DuplicateHandle Native API',
+    badge: 'NO TOOLS',
+    badgeColor: 'text-[hsl(180,100%,50%)] border-[hsl(180,100%,50%)/0.3] bg-[hsl(180,100%,50%)/0.1]',
+    desc: 'Uses Windows NtQuerySystemInformation + DuplicateHandle to force-close handles in Roblox process.',
+    diff: 'Intermediate',
+    diffColor: 'text-[hsl(38,92%,60%)]',
   },
   {
     icon: Zap,
     title: 'Handle.exe Auto-Loop',
     badge: 'AUTOMATED',
     badgeColor: 'text-[hsl(180,100%,50%)] border-[hsl(180,100%,50%)/0.3] bg-[hsl(180,100%,50%)/0.1]',
-    desc: 'Microsoft Handle.exe auto-closes singleton handle as soon as Roblox creates it.',
+    desc: 'Microsoft Handle64.exe watches for & closes both singleton handles automatically.',
     diff: 'Intermediate',
     diffColor: 'text-[hsl(38,92%,60%)]',
   },
@@ -35,7 +44,16 @@ const QUICK_METHODS = [
     title: 'Fishstrap Bootstrapper',
     badge: 'POPULAR',
     badgeColor: 'text-[hsl(38,92%,60%)] border-[hsl(38,92%,60%)/0.3] bg-[hsl(38,92%,60%)/0.1]',
-    desc: 'Open-source Bloxstrap fork. One-click multi-instance toggle. 511+ GitHub stars.',
+    desc: 'Open-source fork. Watcher process holds ROBLOX_singletonMutex. 511+ GitHub stars.',
+    diff: 'Beginner',
+    diffColor: 'text-[hsl(150,100%,45%)]',
+  },
+  {
+    icon: GitBranch,
+    title: 'Voidstrap Bootstrapper',
+    badge: '194 STARS',
+    badgeColor: 'text-[hsl(270,80%,70%)] border-[hsl(270,80%,70%)/0.3] bg-[hsl(270,80%,70%)/0.1]',
+    desc: 'Active Bloxstrap fork with multi-instance, advanced customization. 58+ releases in 2026.',
     diff: 'Beginner',
     diffColor: 'text-[hsl(150,100%,45%)]',
   },
@@ -53,7 +71,7 @@ const QUICK_METHODS = [
     title: 'Separate Windows User',
     badge: 'STABLE',
     badgeColor: 'text-[hsl(150,100%,45%)] border-[hsl(150,100%,45%)/0.3] bg-[hsl(150,100%,45%)/0.1]',
-    desc: 'Different Windows user accounts = completely separate mutex namespace. Very stable.',
+    desc: 'Different Windows user accounts = separate mutex namespace. Not patchable by Roblox.',
     diff: 'Intermediate',
     diffColor: 'text-[hsl(38,92%,60%)]',
   },
@@ -66,55 +84,46 @@ const QUICK_METHODS = [
     diff: 'Advanced',
     diffColor: 'text-[hsl(0,84%,60%)]',
   },
-  {
-    icon: Layers,
-    title: 'Full Virtual Machine',
-    badge: 'MAX ISOLATION',
-    badgeColor: 'text-[hsl(38,92%,60%)] border-[hsl(38,92%,60%)/0.3] bg-[hsl(38,92%,60%)/0.1]',
-    desc: 'VirtualBox/VMware. Complete separate Windows OS. Highest isolation, highest complexity.',
-    diff: 'Advanced',
-    diffColor: 'text-[hsl(0,84%,60%)]',
-  },
 ]
 
 const HOW_IT_WORKS = [
   {
     step: '01',
-    title: 'Roblox checks for mutex',
-    desc: 'When Roblox launches, it looks for the "ROBLOX_singletonEvent" named mutex — a Windows kernel object.'
+    title: 'Roblox checks for singleton handles',
+    desc: 'When Roblox launches, it checks for "ROBLOX_singletonMutex" (Mutex) AND "ROBLOX_singletonEvent" (Event) — two Windows kernel objects.'
   },
   {
     step: '02',
-    title: 'Mutex found → close old instance',
-    desc: 'If the mutex exists and is owned by another Roblox process, the new instance signals the old one to close.'
+    title: 'Handle found → signal old instance to close',
+    desc: 'If either handle exists and is owned by another Roblox process, the new instance uses it to signal the old one to exit.'
   },
   {
     step: '03',
-    title: 'The bypass: pre-claim or isolate',
-    desc: 'Multi-instance methods either pre-claim the mutex (so Roblox can\'t use it to kill others), or run instances in isolated namespaces (VMs, sandbox, different users).'
+    title: 'Bypass: pre-claim, close, or isolate',
+    desc: 'Methods either pre-claim both handles (so Roblox can\'t use them), actively close them via DuplicateHandle, or run instances in isolated namespaces (VMs, Sandbox, different users).'
   },
   {
     step: '04',
     title: 'Multiple instances run freely',
-    desc: 'Each Roblox process runs independently. The mutex check is bypassed, making all instances coexist.'
+    desc: 'Each Roblox process runs independently. Both singleton checks are bypassed, making all instances coexist.'
   },
 ]
 
 const MALWARE_WARNING_ITEMS = [
   {
     emoji: '🚨',
-    title: 'Fake multi-instance launchers steal accounts',
-    desc: 'Hackers distribute malware named "RobloxMultiLauncher.exe", "MultiRBX.exe", etc. disguised as multi-instance tools. They contain info-stealers that harvest your .ROBLOSECURITY cookie (full account access). In 2025-2026, over 610,000 Roblox accounts were stolen this way.',
+    title: 'Fake launchers steal accounts',
+    desc: 'Executables like "RobloxMultiLauncher.exe" contain Lumma/RedLine infostealers that harvest your .ROBLOSECURITY cookie (full account access). 610,000+ accounts stolen in 2025-2026 this way.',
   },
   {
     emoji: '⚠️',
-    title: 'Only use tools from official GitHub repositories',
-    desc: 'Fishstrap: github.com/fishstrap/fishstrap | MultiBloxy: github.com/Zgoly/MultiBloxy | Handle.exe: Microsoft Sysinternals. Any other site offering "multi-instance launchers" as downloads is a red flag.',
+    title: 'Use only official GitHub repositories',
+    desc: 'Fishstrap: github.com/fishstrap/fishstrap | Voidstrap: github.com/voidstrap/Voidstrap | MultiBlox: github.com/unknownperson-vos/MultiBlox | MultiBloxy: github.com/Zgoly/MultiBloxy',
   },
   {
     emoji: '🔍',
-    title: 'Scan every downloaded executable with VirusTotal',
-    desc: 'Before running any .exe, go to virustotal.com and upload the file. Even safe tools get flagged (false positives) — but if 10+ engines flag it, do not run it. Prefer open-source tools where you can read the code.',
+    title: 'Scan every .exe with VirusTotal first',
+    desc: 'Upload to virustotal.com before running. If 10+ engines flag it, do not run. Better: use open-source tools (Fishstrap, Voidstrap) where you can audit the code. Or use our inline PowerShell scripts — no .exe download needed.',
   },
 ]
 
@@ -133,7 +142,7 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[hsl(180,100%,50%)/0.3] bg-[hsl(180,100%,50%)/0.08] mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-[hsl(150,100%,45%)] animate-pulse" />
-              <span className="font-mono text-xs text-[hsl(180,100%,50%)]">Updated May 2026 · 11 methods · All verified</span>
+              <span className="font-mono text-xs text-[hsl(180,100%,50%)]">Updated May 2026 · 14 methods · Covers both singletonEvent + singletonMutex</span>
             </div>
 
             <h1 className="font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6">
@@ -145,17 +154,17 @@ export default function HomePage() {
             </h1>
 
             <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed mb-8 max-w-2xl">
-              Run multiple Roblox accounts simultaneously. 11 working methods — from{' '}
-              <span className="text-[hsl(180,100%,50%)]">PowerShell mutex bypass</span> to{' '}
+              Run multiple Roblox accounts simultaneously. 14 working methods — from{' '}
+              <span className="text-[hsl(180,100%,50%)]">DuplicateHandle native API</span> to{' '}
               <span className="text-[hsl(180,100%,50%)]">isolated containers</span> to{' '}
-              <span className="text-[hsl(180,100%,50%)]">Windows Sandbox</span>.
-              Includes ready-to-run scripts.
+              <span className="text-[hsl(180,100%,50%)]">bootstrapper watcher processes</span>.
+              Includes 7 ready-to-run scripts.
             </p>
 
             <div className="flex flex-wrap gap-3">
               <Link to="/methods" className="btn-primary px-6 py-3 rounded-lg flex items-center gap-2 text-base">
                 <Zap className="w-4 h-4" />
-                All 11 Methods
+                All 14 Methods
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link to="/scripts" className="px-6 py-3 rounded-lg border border-border text-foreground hover:border-[hsl(180,100%,50%)/0.4] hover:bg-[hsl(180,100%,50%)/0.05] transition-all text-base flex items-center gap-2">
@@ -171,8 +180,8 @@ export default function HomePage() {
             {/* Quick stats */}
             <div className="mt-12 flex flex-wrap gap-8">
               {[
-                { label: 'Methods', value: '11' },
-                { label: 'Max Instances', value: '30+' },
+                { label: 'Methods', value: '14' },
+                { label: 'Singleton Handles', value: '2' },
                 { label: 'Downloadable Scripts', value: '7' },
                 { label: 'Cost', value: 'Free' },
               ].map(({ label, value }) => (
@@ -186,7 +195,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Malware warning — above the fold */}
+      {/* Malware warning */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="p-5 rounded-xl border border-[hsl(0,84%,60%)/0.3] bg-[hsl(0,84%,60%)/0.05]">
           <div className="flex items-start gap-3 mb-4">
@@ -205,7 +214,7 @@ export default function HomePage() {
           </div>
           <div className="mt-4 flex items-center gap-2 text-xs font-mono text-muted-foreground">
             <Shield className="w-3.5 h-3.5 text-[hsl(150,100%,45%)]" />
-            <span>This site only links to official GitHub repositories and Microsoft tools. We generate scripts inline — nothing to download from us except plain text files.</span>
+            <span>This site only links to official GitHub repositories and Microsoft tools. Scripts are generated inline — nothing to download from us.</span>
           </div>
         </div>
       </section>
@@ -221,9 +230,11 @@ export default function HomePage() {
             Why Does Roblox Close Previous Instances?
           </h2>
           <p className="text-muted-foreground text-base max-w-2xl mx-auto">
-            Roblox uses a Windows named mutex called{' '}
-            <code className="font-mono text-[hsl(180,100%,50%)] text-sm bg-[hsl(180,100%,50%)/0.1] px-1.5 py-0.5 rounded">ROBLOX_singletonEvent</code>{' '}
-            to enforce one-client-per-device. Here's exactly how bypasses work.
+            Roblox uses two Windows kernel objects for singleton enforcement:{' '}
+            <code className="font-mono text-[hsl(180,100%,50%)] text-sm bg-[hsl(180,100%,50%)/0.1] px-1.5 py-0.5 rounded">ROBLOX_singletonMutex</code>
+            {' '}and{' '}
+            <code className="font-mono text-[hsl(38,92%,60%)] text-sm bg-[hsl(38,92%,60%)/0.1] px-1.5 py-0.5 rounded">ROBLOX_singletonEvent</code>.
+            Here's exactly how bypasses work.
           </p>
         </div>
 
@@ -241,22 +252,22 @@ export default function HomePage() {
         <div className="mt-6 grid sm:grid-cols-3 gap-4">
           {[
             {
-              label: 'Mutex Methods',
-              desc: 'Pre-claim or auto-close ROBLOX_singletonEvent using Windows API or Sysinternals Handle.exe',
+              label: 'Pre-Claim / Watcher',
+              desc: 'Claim ROBLOX_singletonMutex + singletonEvent before Roblox launches. Fishstrap uses a dedicated watcher process. PowerShell uses CreateMutex + CreateEvent.',
               color: 'border-[hsl(180,100%,50%)/0.2] bg-[hsl(180,100%,50%)/0.04]',
               text: 'text-[hsl(180,100%,50%)]',
             },
             {
-              label: 'Namespace Isolation',
-              desc: 'Different Windows users, Windows Sandbox, or Virtual Machines create completely separate mutex namespaces',
-              color: 'border-[hsl(150,100%,45%)/0.2] bg-[hsl(150,100%,45%)/0.04]',
-              text: 'text-[hsl(150,100%,45%)]',
-            },
-            {
-              label: 'Device Emulation',
-              desc: 'Android emulators and VMs present as entirely separate physical devices — mutex is irrelevant',
+              label: 'Active Handle Close',
+              desc: 'Use DuplicateHandle (DUPLICATE_CLOSE_SOURCE) or Sysinternals Handle.exe to force-close the singleton handles inside the running Roblox process.',
               color: 'border-[hsl(38,92%,60%)/0.2] bg-[hsl(38,92%,60%)/0.04]',
               text: 'text-[hsl(38,92%,60%)]',
+            },
+            {
+              label: 'Namespace / Device Isolation',
+              desc: 'Windows user sessions, Sandbox, VMs, and Android emulators create completely separate mutex namespaces or present as different devices entirely.',
+              color: 'border-[hsl(150,100%,45%)/0.2] bg-[hsl(150,100%,45%)/0.04]',
+              text: 'text-[hsl(150,100%,45%)]',
             },
           ].map(({ label, desc, color, text }) => (
             <div key={label} className={`p-4 rounded-xl border ${color}`}>
@@ -272,14 +283,14 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-foreground">All Methods Overview</h2>
-            <p className="text-muted-foreground text-sm mt-1">Click any card for the full step-by-step guide</p>
+            <p className="text-muted-foreground text-sm mt-1">14 methods — click for full step-by-step guides</p>
           </div>
           <Link to="/methods" className="text-sm text-[hsl(180,100%,50%)] hover:underline font-mono flex items-center gap-1">
-            Full guides <ArrowRight className="w-3.5 h-3.5" />
+            All 14 guides <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {QUICK_METHODS.map(({ icon: Icon, title, badge, badgeColor, desc, diff, diffColor }) => (
             <Link
               key={title}
@@ -304,14 +315,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bottom CTA */}
+      {/* Bottom note */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="p-5 rounded-xl border border-[hsl(38,92%,60%)/0.2] bg-[hsl(38,92%,60%)/0.04] flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-[hsl(38,92%,60%)] flex-shrink-0 mt-0.5" />
           <div className="text-sm text-muted-foreground leading-relaxed">
             <span className="text-[hsl(38,92%,60%)] font-semibold">Note: </span>
-            Multi-instance is not officially supported by Roblox. It is widely used without bans, but Roblox actively patches specific tools.
-            Methods using mutex isolation are most reliable. Never combine with exploits or botting.{' '}
+            Multi-instance is not officially supported by Roblox. Widely used without bans, but Roblox actively patches specific tools.
+            Never combine with exploits or botting.{' '}
             <Link to="/safety" className="text-[hsl(180,100%,50%)] hover:underline">Full safety guide →</Link>
           </div>
         </div>
