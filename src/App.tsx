@@ -7,6 +7,7 @@ import ScriptGeneratorPage from '@/pages/ScriptGeneratorPage'
 import AccountManagerPage from '@/pages/AccountManagerPage'
 import SafetyPage from '@/pages/SafetyPage'
 import SandboxPage from '@/pages/SandboxPage'
+import MacPage from '@/pages/MacPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/accounts" element={<AccountManagerPage />} />
           <Route path="/safety" element={<SafetyPage />} />
           <Route path="/sandbox" element={<SandboxPage />} />
+          <Route path="/mac" element={<MacPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
